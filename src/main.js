@@ -1,3 +1,13 @@
+/**
+ * Returns true, if given key is included in the blacklisted
+ * keys.
+ * @param {String} key key for check, string.
+ * @returns {Boolean}.
+ */
+function isPrototypePolluted (key) {
+  return ['__proto__', 'prototype', 'constructor'].includes(key)
+}
+
 export const setPathValue = (layer, path, value) => {
   let splitPath = path.split('.')
   return splitPath
@@ -18,7 +28,7 @@ export const expandKeys = (obj) => {
     .filter(key => key.indexOf('.') > -1)
     .reduce(function (obj, key) {
       var keyValue = obj[key]
-      setPathValue(obj, key, keyValue)
+      !isPrototypePolluted(key) && setPathValue(obj, key, keyValue)
       delete obj[key]
       return obj
     }, obj)
